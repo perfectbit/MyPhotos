@@ -19,8 +19,13 @@ public class Model {
 	public Model(DBProvider newDB) {
 		db = newDB;
 	}
-	public void deleteTag(String tag) {
-		//delete tag and replace it in images table on default value 1
+	
+	/**
+	 * Removes tag from table TAGS and replace it in images table on default value = 1
+	 * 
+	 * @param tag - delete tag
+	 */
+	public void deleteTag(String tag) {		
 		int tags_pk = db.deleteTag(tag);
 		db.updateImagesTag(tags_pk, DEFAULT_TAG_PK);
 	}
@@ -33,7 +38,12 @@ public class Model {
 		db.changeTagName(oldTag, newTag);
 	}
 	
-	// add info about image in to db and to save cache on the disk
+	/**
+	 * Adds information about image in database and saves imagecache on the disk
+	 * 
+	 * @param img
+	 * @param file
+	 */
 	public synchronized void addNewImage(BufferedImage img, File file) {
 		int image_pk = db.insertImage(file.getName(), file.getAbsolutePath(), DEFAULT_TAG_PK);
 		SaveImageOnDisk saveImage = new SaveImageOnDisk(img, file, db.getCacheName(image_pk)); 
@@ -83,7 +93,7 @@ public class Model {
 		for (BufferedImage img : cachedImages) {
 			String name = iterFullName.next();
 			File file = new File(name);
-			System.out.println("File name is " + name);			
+			System.out.println("File name is " + name);
 			imgPreviewsList.add(new ImagePreview(img, file, tag));
 		}
 		return imgPreviewsList;
