@@ -38,11 +38,8 @@ import myphotos.main.App;
 public class ImagePreview extends JPanel {
 
 	private final int IMAGE_SIZE = 200;
-	private final int PANEL_SIZE = 230;
-	private final int BORDER = 15;
-	private int BORDER_WIDTH = 3;
-	private int imageWidth;
-	private int imageHeight;
+	private final int PANEL_SIZE = 255;
+	private int BORDER_WIDTH = 3;	
 	private int panelWidth = IMAGE_SIZE;
 	private int panelHeight = PANEL_SIZE;
 
@@ -179,10 +176,6 @@ public class ImagePreview extends JPanel {
 		private int y;
 
 		JustImage(BufferedImage img) {
-			/*
-			x = (IMAGE_SIZE - img.getWidth()) / 2;
-			y = (IMAGE_SIZE - img.getHeight()) / 2;
-
 			if (img.getWidth() > img.getHeight()) {
 				width = IMAGE_SIZE;
 				height = IMAGE_SIZE * img.getHeight() / img.getWidth();
@@ -190,39 +183,26 @@ public class ImagePreview extends JPanel {
 				width = IMAGE_SIZE * img.getWidth() / img.getHeight();
 				height = IMAGE_SIZE;
 			}
-			System.out.println(x + " - " + y + " - " + width + " - " + height);
-			*/
-			//border = 
-			
+			x = (IMAGE_SIZE - width) / 2;
+			y = (IMAGE_SIZE - height) / 2;
+
+			if (x > y) {
+				border = new RoundRectangle2D.Double(x, y + 1, width,
+						height - 3, 0, 0);
+			} else {
+				border = new RoundRectangle2D.Double(x + 1, y, width - 3,
+						height, 0, 0);
+			}
 		}
 
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2d = (Graphics2D) g;
-			int width = 0;
-			int height = 0;
-
-			if (image.getWidth() > image.getHeight()) {
-				width = this.getWidth();
-				height = image.getHeight() * this.getWidth() / image.getWidth();
-			} else {
-				width = image.getWidth() * this.getHeight() / image.getHeight();
-				height = this.getHeight();
-			}
-			int x = (this.getWidth() - width) / 2;
-			int y = (this.getHeight() - height) / 2;
 
 			g2d.drawImage(image, x, y, width, height, null);
 
 			if (borderFlag) {
 				g2d.setStroke(new BasicStroke(BORDER_WIDTH));
 				g2d.setColor(color);
-				if (border == null) {
-					if (x>y) {
-						border = new RoundRectangle2D.Double(x, y+1, width, height-3, 0, 0);
-					} else {
-						border = new RoundRectangle2D.Double(x+1, y, width-3, height, 0, 0);
-					}
-				}
 				g2d.draw(border);
 			}
 		}
