@@ -36,25 +36,25 @@ import myphotos.io.SaveImageOnDisk;
 import myphotos.main.App;
 
 public class ImagePreview extends JPanel {
-	
+
 	private final int IMAGE_SIZE = 200;
 	private final int PANEL_SIZE = 230;
 	private final int BORDER = 15;
 	private int BORDER_WIDTH = 3;
 	private int imageWidth;
 	private int imageHeight;
-	private int panelWidth = IMAGE_SIZE + 2*BORDER;
-	private int panelHeight = IMAGE_SIZE + 3*BORDER;
-	
+	private int panelWidth = IMAGE_SIZE;
+	private int panelHeight = PANEL_SIZE;
+
 	private File imgFile;
 	private boolean borderFlag = false;
 	private JustImage imagePanel;
 	private JLabel label;
 	private JComboBox<String> listOfTags;
-	private BufferedImage image = null;	
+	private BufferedImage image = null;
 	private RoundRectangle2D border;
-	private Color color = new Color(0,184,245);
-	
+	private Color color = new Color(0, 184, 245);
+
 	public ImagePreview(BufferedImage newImage, File file, String tag) {
 		super();
 		setVisible(true);
@@ -63,132 +63,139 @@ public class ImagePreview extends JPanel {
 		setPreferredSize(new Dimension(panelWidth, panelHeight));
 		setMaximumSize(new Dimension(panelWidth, panelHeight));
 		setMinimumSize(new Dimension(panelWidth, panelHeight));
-		
-		imgFile = file; 
+
+		imgFile = file;
 		image = newImage;
-		imagePanel = new JustImage();
+		imagePanel = new JustImage(image);
 		imagePanel.addMouseListener(new PreviewMouseListener());
 		add(imagePanel, BorderLayout.CENTER);
-		
-		JPanel panel = new JPanel(new GridLayout(2,1));
+
+		JPanel panel = new JPanel(new GridLayout(2, 1));
 		label = new JLabel(imgFile.getName());
 		panel.add(label);
 		listOfTags = createJComboBox(tag);
-		
+
 		panel.add(listOfTags);
 		add(panel, BorderLayout.SOUTH);
 	}
-	
+
 	private JComboBox<String> createJComboBox(String tag) {
 		String[] A = App.getModel().getTagsArray();
-		if (A == null) {			
+		if (A == null) {
 			return new JComboBox<String>();
 		}
-		ComboBoxModel<String> comboModel = new DefaultComboBoxModel<String>(A);		
+		ComboBoxModel<String> comboModel = new DefaultComboBoxModel<String>(A);
 		JComboBox<String> combo = new JComboBox<String>(comboModel);
 		combo.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		combo.setSelectedItem(tag);
 		combo.addActionListener(new ComboListener());
 		return combo;
 	}
-	
+
 	public void setImage(BufferedImage newImage) {
 		image = newImage;
 		repaint();
-		
 		setSize(PANEL_SIZE, PANEL_SIZE);
 		setVisible(true);
 		setFocusable(true);
 		repaint();
 	}
-	
+
 	@Override
 	public Dimension getMinimumSize() {
 		return new Dimension(panelWidth, panelHeight);
 	}
-	
+
 	@Override
 	public Dimension getMaximumSize() {
 		return new Dimension(panelWidth, panelHeight);
 	}
-	
+
 	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(panelWidth, panelHeight);
 	}
-	
+
 	public File getImgFile() {
 		return imgFile;
 	}
-	 
+
 	public void setImgFile(File imgFile) {
 		this.imgFile = imgFile;
 	}
-	
+
 	public void setFlag(boolean flag) {
 		this.borderFlag = flag;
 	}
-	
+
 	class ComboListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			// TODO Auto-generated method stub
-			JComboBox combo = (JComboBox)arg0.getSource();
-            String newTag = (String)combo.getSelectedItem();
-            App.getModel().setTagForImage(imgFile, newTag);
+			JComboBox combo = (JComboBox) arg0.getSource();
+			String newTag = (String) combo.getSelectedItem();
+			App.getModel().setTagForImage(imgFile, newTag);
 		}
 	}
-	
+
 	class PreviewMouseListener implements MouseListener {
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
-			if (arg0.getClickCount()>=2) {
+			if (arg0.getClickCount() >= 2) {
 				ImagesPanel.showImage(imgFile);
 			}
-			if (arg0.getClickCount()==1) {
+			if (arg0.getClickCount() == 1) {
 				ImagesPanel.uncheckPreviews();
-				if(!borderFlag) {
+				if (!borderFlag) {
 					borderFlag = true;
+				} else {
+					borderFlag = false;
 				}
 				App.getMainFrame().repaint();
 			}
 		}
+
 		@Override
 		public void mouseEntered(MouseEvent arg0) {
 		}
+
 		@Override
 		public void mouseExited(MouseEvent arg0) {
 		}
+
 		@Override
 		public void mousePressed(MouseEvent arg0) {
 		}
+
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
 		}
 	}
-	
+
 	class JustImage extends JPanel {
 		private int width;
 		private int height;
 		private int x;
 		private int y;
-		
-		JustImage() {
-			x = (this.getWidth() - width) / 2;
-			y = (this.getHeight() - height) / 2;
-			
-			if (image.getWidth() > image.getHeight()) {
-				width = this.getWidth();
-				height = image.getHeight() * this.getWidth()
-						/ image.getWidth();
+
+		JustImage(BufferedImage img) {
+			/*
+			x = (IMAGE_SIZE - img.getWidth()) / 2;
+			y = (IMAGE_SIZE - img.getHeight()) / 2;
+
+			if (img.getWidth() > img.getHeight()) {
+				width = IMAGE_SIZE;
+				height = IMAGE_SIZE * img.getHeight() / img.getWidth();
 			} else {
-				width = image.getWidth() * this.getHeight()
-						/ image.getHeight();
-				height = this.getHeight();
+				width = IMAGE_SIZE * img.getWidth() / img.getHeight();
+				height = IMAGE_SIZE;
 			}
-			border = new RoundRectangle2D.Double(x, y, width, height, 0, 0);
+			System.out.println(x + " - " + y + " - " + width + " - " + height);
+			*/
+			//border = 
+			
 		}
-		
+
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2d = (Graphics2D) g;
 			int width = 0;
@@ -196,24 +203,29 @@ public class ImagePreview extends JPanel {
 
 			if (image.getWidth() > image.getHeight()) {
 				width = this.getWidth();
-				height = image.getHeight() * this.getWidth()
-						/ image.getWidth();
+				height = image.getHeight() * this.getWidth() / image.getWidth();
 			} else {
-				width = image.getWidth() * this.getHeight()
-						/ image.getHeight();
+				width = image.getWidth() * this.getHeight() / image.getHeight();
 				height = this.getHeight();
 			}
 			int x = (this.getWidth() - width) / 2;
 			int y = (this.getHeight() - height) / 2;
 
 			g2d.drawImage(image, x, y, width, height, null);
-			
+
 			if (borderFlag) {
 				g2d.setStroke(new BasicStroke(BORDER_WIDTH));
 				g2d.setColor(color);
+				if (border == null) {
+					if (x>y) {
+						border = new RoundRectangle2D.Double(x, y+1, width, height-3, 0, 0);
+					} else {
+						border = new RoundRectangle2D.Double(x+1, y, width-3, height, 0, 0);
+					}
+				}
 				g2d.draw(border);
 			}
 		}
 	}
-	
+
 }
