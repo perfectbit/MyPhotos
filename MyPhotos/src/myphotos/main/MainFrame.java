@@ -57,17 +57,16 @@ public class MainFrame extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				int confirm = JOptionPane.showOptionDialog(null,
-						"Are You Sure to Close Application?",
-						"Exit Confirmation", JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE, null, null, null);
-				
+						App.getProp("mess.suretoquit"),						
+						App.getProp("mess.titleexit"), JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, null, null);				
 				if (confirm == JOptionPane.YES_OPTION) {
 					App.getModel().shutdown();
 					System.exit(JFrame.DISPOSE_ON_CLOSE);
 				}
 			}
 		};
-		// TODO "NO" option doesnt work
+		// TODO "NO" option doesn't work
 		//this.addWindowListener(exitListener);
 		treePanel = new TreePanel(this);
 		tagsPanel = new TagsPanel();
@@ -107,13 +106,13 @@ public class MainFrame extends JFrame {
 		JMenuItem menuItemQuit;
 		JMenuItem menuScanFolder;
 		mainMenu = new JMenuBar();
-		menuItemOpen = new JMenuItem("Open Image");
+		menuItemOpen = new JMenuItem(App.getProp("menu.open"));
 		menuItemOpen.addActionListener(new ActionOpenImage());
-		menuItemQuit = new JMenuItem("Quit");
+		menuItemQuit = new JMenuItem(App.getProp("menu.quit"));
 		menuItemQuit.addActionListener(new ActionQuit());
-		menuScanFolder = new JMenuItem("Scan folder");
+		menuScanFolder = new JMenuItem(App.getProp("menu.scanfolder"));
 		menuScanFolder.addActionListener(new ScanAction());
-		menuFile = new JMenu("  File  ");
+		menuFile = new JMenu(App.getProp("menu.file"));
 		menuFile.add(menuItemOpen);
 		menuFile.add(menuScanFolder);
 		menuFile.add(menuItemQuit);
@@ -203,10 +202,11 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			int confirm = JOptionPane.showOptionDialog(null,
-					"Are You Sure to Close Application?",
-					"Exit Confirmation", JOptionPane.YES_NO_OPTION,
+					App.getProp("mess.suretoquit"),
+					App.getProp("mess.titleexit"),
+					JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE, null, null, null);
-			if (confirm == JOptionPane.YES_OPTION) {				
+			if (confirm == JOptionPane.YES_OPTION) {
 				App.getModel().shutdown();
 				System.exit(JFrame.DISPOSE_ON_CLOSE);
 			}

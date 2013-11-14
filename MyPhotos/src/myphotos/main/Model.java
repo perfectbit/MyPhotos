@@ -25,7 +25,7 @@ public class Model {
 	 * 
 	 * @param tag - delete tag
 	 */
-	public void deleteTag(String tag) {		
+	public void deleteTag(String tag) {
 		int tags_pk = db.deleteTag(tag);
 		db.updateImagesTag(tags_pk, DEFAULT_TAG_PK);
 	}
@@ -99,7 +99,7 @@ public class Model {
 		return imgPreviewsList;
 	}
 	
-	public void setTagForImage(File imgFile, String newTag) {		
+	public void setTagForImage(File imgFile, String newTag) {
 		db.setTagForImage(imgFile, newTag);
 	}
 	

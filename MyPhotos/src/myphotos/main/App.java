@@ -1,6 +1,5 @@
 package myphotos.main;
 
-import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -8,6 +7,7 @@ public class App {
 	private static MainFrame mainFrame;
 	private static DBProvider dbprovider;
 	private static Model model;
+	private static AppProperties prop;
 
     public static void main(String[] args) {
     	try {
@@ -20,9 +20,10 @@ public class App {
 			e.printStackTrace();
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
-		}    	
+		}
+    	prop = new AppProperties();
     	dbprovider = new DBProvider();
-    	model = new Model(dbprovider);
+    	model = new Model(dbprovider);    	
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
@@ -37,10 +38,10 @@ public class App {
 	public static MainFrame getMainFrame() {
 		return mainFrame;
 	}
-	/*
-	public static DBProvider getDBProvider() {
-		return dbprovider;
-	}*/
+	
+	public static String getProp(String key) {
+		return prop.getPropertie(key);
+	}
 	
 	public static Model getModel() {
 		return model;

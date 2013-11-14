@@ -129,7 +129,7 @@ public class ImagePreview extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			// TODO Auto-generated method stub
-			JComboBox combo = (JComboBox) arg0.getSource();
+			JComboBox<String> combo = (JComboBox<String>) arg0.getSource();
 			String newTag = (String) combo.getSelectedItem();
 			App.getModel().setTagForImage(imgFile, newTag);
 		}

@@ -20,7 +20,7 @@ public class DBProvider {
 	private Connection mConn = null;
 	private Statement mStmt = null;
 
-	DBProvider() {
+	public DBProvider() {
 		createConnection(); // done
 		// dropTables(); // done
 		// createTables(); // done
@@ -56,6 +56,18 @@ public class DBProvider {
 	}
 
 	public boolean addNewTag(String newTag) {
+		if (newTag == null) {
+			System.out.println("Can't add \"null\" tag.");
+			return false;
+		}
+		if (newTag.endsWith("\'") || newTag.startsWith("\'")) {
+			System.out.println("Can't add tag starting with \" \' \" or ending with \" \' \" .");
+			return false;
+		}
+		if (newTag.equals("")) {
+			System.out.println("Can't add tag \"\".");
+			return false;
+		}
 		String strSelectCheck = "SELECT TAG FROM TAGS WHERE TAG = \'" + newTag
 				+ "\'";
 		try {
