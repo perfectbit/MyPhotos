@@ -13,8 +13,6 @@ import java.io.FilenameFilter;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -192,7 +190,7 @@ public class MainFrame extends JFrame {
 						tasks.add(task);
 						task.start();
 						Thread.sleep(50);
-						while (threadGroup.activeCount() > 10) {
+						while (threadGroup.activeCount() > 5) {
 							try {
 								Thread.sleep(50);
 							} catch (InterruptedException e) {
