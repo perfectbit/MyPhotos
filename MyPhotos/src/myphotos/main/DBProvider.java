@@ -25,8 +25,8 @@ public class DBProvider {
 		if (!cacheDirect.exists()) cacheDirect.mkdir();
 		
 		createConnection(); // done
-		 dropTables(); // done
-		 createTables(); // done
+		// dropTables(); // done
+		// createTables(); // done
 		checkTables(); // done
 		addNewTag("cats"); // done
 		// selectTag(newTag); // done
