@@ -23,7 +23,7 @@ public class App {
 		}
     	prop = new AppProperties();
     	dbprovider = new DBProvider();
-    	model = new Model(dbprovider);    	
+    	model = new Model(dbprovider);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();

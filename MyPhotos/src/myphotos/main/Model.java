@@ -101,6 +101,5 @@ public class Model {
 	
 	public void setTagForImage(File imgFile, String newTag) {
 		db.setTagForImage(imgFile, newTag);
-	}
-	
+	}	
 }
