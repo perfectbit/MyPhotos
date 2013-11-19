@@ -22,8 +22,8 @@ public class DBProvider {
 
 	public DBProvider() {
 		createConnection(); // done
-		// dropTables(); // done
-		// createTables(); // done
+		 dropTables(); // done
+		 createTables(); // done
 		checkTables(); // done
 		addNewTag("cats"); // done
 		// selectTag(newTag); // done
@@ -319,7 +319,7 @@ public class DBProvider {
 			result = mStmt.getResultSet();
 
 			while (result.next()) {
-				System.out.println(result.getString("IMAGES_PK"));
+				System.out.println("IMAGES_PK = " + result.getString("IMAGES_PK"));
 				imageCache = result.getString("IMAGES_PK");
 				image_pk = result.getInt("IMAGES_PK");
 			}

@@ -11,7 +11,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.LinkedList;
+import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,13 +24,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
+import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
 import myphotos.components.ImagePreview;
+import myphotos.components.MyProgressBar;
 import myphotos.components.TreePanel;
 import myphotos.components.ImagesPanel;
 import myphotos.components.TagsPanel;
@@ -52,14 +59,16 @@ public class MainFrame extends JFrame {
 		this.setBounds(X_START, Y_START, FRAME_WIDTH, FRAME_HEIGHT);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setVisible(true);
+		this.setLocationRelativeTo(null);
 
 		WindowListener exitListener = new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				int confirm = JOptionPane.showOptionDialog(null,
-						App.getProp("mess.suretoquit"),						
-						App.getProp("mess.titleexit"), JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE, null, null, null);				
+						App.getProp("mess.suretoquit"),
+						App.getProp("mess.titleexit"),
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, null, null);
 				if (confirm == JOptionPane.YES_OPTION) {
 					App.getModel().shutdown();
 					System.exit(JFrame.DISPOSE_ON_CLOSE);
@@ -67,7 +76,7 @@ public class MainFrame extends JFrame {
 			}
 		};
 		// TODO "NO" option doesn't work
-		//this.addWindowListener(exitListener);
+		// this.addWindowListener(exitListener);
 		treePanel = new TreePanel(this);
 		tagsPanel = new TagsPanel();
 		imagesPanel = new ImagesPanel();
@@ -95,7 +104,7 @@ public class MainFrame extends JFrame {
 		// this.getContentPane().add(statusBar, BorderLayout.SOUTH);
 		setJMenuBar(mainMenu);
 	}
-	
+
 	public void showImagesWithThatTag(String tag) {
 		imagesPanel.showImagesWithThatTag(tag);
 	}
@@ -141,13 +150,13 @@ public class MainFrame extends JFrame {
 				LinkedList<BufferedImage> listOfImages;
 
 				imagesPanel.clearOldImages();
-				// TODO use thread queue complete
-				// TODO use swingworks for loding progressbar
+				// TODO use swingworks for progressbar
 				listOfImages = readImages(files);
 
 				int i = 0;
 				for (BufferedImage img : listOfImages) {
-					ImagePreview imgPre = new ImagePreview(img, files[i], "--New--");
+					ImagePreview imgPre = new ImagePreview(img, files[i],
+							"--New--");
 					imagesPanel.addImagePreview(imgPre);
 					App.getModel().addNewImage(img, files[i++]);
 				}
@@ -157,25 +166,60 @@ public class MainFrame extends JFrame {
 			}
 		}
 
-		private LinkedList<BufferedImage> readImages(File[] files) {
-			int filesCount = 0;
-			LinkedList<ReadImageFromDisk> tasks = new LinkedList<ReadImageFromDisk>();
-			ReadImageFromDisk task;
-			ThreadGroup threadGroup = new ThreadGroup("Group of Threads");
+		private LinkedList<BufferedImage> readImages(final File[] files) {
+			final int lenght = files.length;
+			final LinkedList<ReadImageFromDisk> tasks = new LinkedList<ReadImageFromDisk>();
+			final ThreadGroup threadGroup = new ThreadGroup("ThreadGroup");
 
-			for (File file : files) {
-				task = new ReadImageFromDisk(threadGroup, file);
-				tasks.add(task);
-				task.start();
-				if (++filesCount > 15) {
-					try {
-						filesCount = 0;
-						wait(50);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+			final JDialog pleaseWaitDialog = new JDialog(App.getMainFrame(),
+					"Loading images", true);
+			final JProgressBar progressBar = new JProgressBar(0, lenght);
+			final JPanel panel = new JPanel();
+			panel.add(progressBar);
+			pleaseWaitDialog.getContentPane().add(panel);
+			pleaseWaitDialog.pack();
+			pleaseWaitDialog.setLocationRelativeTo(App.getMainFrame());
+
+			SwingWorker<Void, Integer> swingWorker = new SwingWorker<Void, Integer>() {
+				@Override
+				protected Void doInBackground() throws Exception {
+					ReadImageFromDisk task;
+					System.out.println("lenght = " + lenght);
+					int i = 0;
+					for (File file : files) {
+						publish(i++);
+						task = new ReadImageFromDisk(threadGroup, file);
+						tasks.add(task);
+						task.start();
+						Thread.sleep(50);
+						while (threadGroup.activeCount() > 10) {
+							try {
+								Thread.sleep(50);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
 					}
+					return null;
 				}
-			}
+
+				@Override
+				protected void process(List<Integer> chunks) {
+					final Integer integer = chunks.get(chunks.size() - 1);
+					System.out.println("Integer = " + integer);
+					progressBar.setValue(integer);
+					panel.repaint();
+				}
+
+				@Override
+				protected void done() {
+					pleaseWaitDialog.setVisible(false);
+				}
+			};
+
+			swingWorker.execute();
+			pleaseWaitDialog.setVisible(true);
+
 			while (threadGroup.activeCount() > 0) {
 				try {
 					wait(50);
@@ -183,6 +227,7 @@ public class MainFrame extends JFrame {
 					e.printStackTrace();
 				}
 			}
+			
 			LinkedList<BufferedImage> buffList = new LinkedList<BufferedImage>();
 			for (ReadImageFromDisk elem : tasks) {
 				buffList.add(elem.getImage());
@@ -203,8 +248,7 @@ public class MainFrame extends JFrame {
 		public void actionPerformed(ActionEvent arg0) {
 			int confirm = JOptionPane.showOptionDialog(null,
 					App.getProp("mess.suretoquit"),
-					App.getProp("mess.titleexit"),
-					JOptionPane.YES_NO_OPTION,
+					App.getProp("mess.titleexit"), JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE, null, null, null);
 			if (confirm == JOptionPane.YES_OPTION) {
 				App.getModel().shutdown();
@@ -253,7 +297,8 @@ public class MainFrame extends JFrame {
 				result = fileChOneImage.showOpenDialog(mainFrame);
 			}
 			if (fileChOneImage != null && result == JFileChooser.APPROVE_OPTION) {
-				ReadImageFromDisk task = new ReadImageFromDisk(fileChOneImage.getSelectedFile());
+				ReadImageFromDisk task = new ReadImageFromDisk(
+						fileChOneImage.getSelectedFile());
 				task.start();
 				while (task.isAlive()) {
 					try {
@@ -264,15 +309,15 @@ public class MainFrame extends JFrame {
 				}
 				ImagePreview imagePreview = new ImagePreview(task.getImage(),
 						fileChOneImage.getSelectedFile(), "--New--");
-				App.getModel().addNewImage(task.getImage(), fileChOneImage.getSelectedFile());
+				App.getModel().addNewImage(task.getImage(),
+						fileChOneImage.getSelectedFile());
 				imagesPanel.clearOldImages();
 				imagesPanel.addImagePreview(imagePreview);
-				
+
 				ImagesPanel.showImagePanel();
 				imagesPanel.revalidate();
 				App.getMainFrame().validate();
-			}
-			System.out.println(imagesPanel.getImagesCount());
+			}			
 			repaint();
 		}
 	}

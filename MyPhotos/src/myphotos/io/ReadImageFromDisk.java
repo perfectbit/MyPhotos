@@ -45,7 +45,7 @@ public class ReadImageFromDisk extends Thread {
 			try {
 				input = new FileInputStream(file);
 				imageInput = ImageIO.createImageInputStream(input);
-		    	buffImage = ImageIO.read(imageInput);		    	
+		    	buffImage = ImageIO.read(imageInput);
 			} catch(IOException e) {
 				e.printStackTrace();
 			} finally {
@@ -54,7 +54,9 @@ public class ReadImageFromDisk extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		if (buffImage == null) {
+			System.out.println("File name is: " + file.getName());
+		}
 		int width = buffImage.getWidth();
 		int height = buffImage.getHeight();
 		int imageWidth;

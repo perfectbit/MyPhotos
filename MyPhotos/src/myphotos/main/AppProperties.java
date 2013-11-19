@@ -11,7 +11,6 @@ public class AppProperties {
 
 	AppProperties() {
 		File file = new File("config.properties");
-
 		if (!file.exists()) {
 			prop = createPropFile();
 		} else {
