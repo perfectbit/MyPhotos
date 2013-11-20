@@ -58,7 +58,7 @@ public class MainFrame extends JFrame {
 		super("MyPhotos 0.1");
 		this.setBounds(X_START, Y_START, FRAME_WIDTH, FRAME_HEIGHT);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		this.setVisible(true);
+		
 		this.setLocationRelativeTo(null);
 
 		this.addComponentListener(new ComponentListener() {
@@ -119,6 +119,7 @@ public class MainFrame extends JFrame {
 
 		// this.getContentPane().add(statusBar, BorderLayout.SOUTH);
 		setJMenuBar(mainMenu);
+		this.setVisible(true);
 	}
 
 	public void showImagesWithThatTag(String tag) {
@@ -165,8 +166,7 @@ public class MainFrame extends JFrame {
 				files = directory.listFiles(fnf);
 				LinkedList<BufferedImage> listOfImages;
 
-				imagesPanel.clearOldImages();
-				// TODO use swingworks for progressbar
+				imagesPanel.clearOldImages();				
 				listOfImages = readImages(files);
 
 				int i = 0;
@@ -177,8 +177,7 @@ public class MainFrame extends JFrame {
 					App.getModel().addNewImage(img, files[i++]);
 				}
 				imagesPanel.changePreferredSize();
-				imagesPanel.revalidate();
-				// App.getMainFrame().validate();
+				imagesPanel.revalidate();				
 			}
 		}
 

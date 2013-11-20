@@ -30,8 +30,7 @@ public class DBProvider {
 		checkTables(); // done
 		addNewTag("cats"); // done
 		// selectTag(newTag); // done
-		showTableTags(); // done
-		// insertImage("image2.jpg", "c://img//image2.jpg", selectTag("cats"));
+		showTableTags(); // done		
 		showTableImages(); // done
 		// checkTables();
 		// updateImage();
@@ -273,7 +272,8 @@ public class DBProvider {
 				+ "images_pk INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY CONSTRAINT images_pk PRIMARY KEY, "
 				+ "NAMEOFFILE varchar(255) NOT NULL, "
 				+ "FULLNAME	varchar(255) NOT NULL UNIQUE, "
-				+ "tags_pk INTEGER NOT NULL, " + "IMAGECACHE varchar(255), "
+				+ "tags_pk INTEGER NOT NULL, "
+				+ "IMAGECACHE varchar(255), "
 				+ "FOREIGN KEY (tags_pk) REFERENCES TAGS(tags_pk))";
 		try {
 			mStmt = mConn.createStatement();

@@ -49,8 +49,7 @@ public class ImagesPanel extends JPanel {
 		}
 		
 		if (count > compInLine) {
-			int k = 260*((count/compInLine)+1);
-			System.out.println("Preferred size height (k) = " + k);
+			int k = 260*((count/compInLine)+1);			
 			panelWithImages.setPreferredSize(new Dimension(frameWidth, k));
 			panelWithImages.setMaximumSize(new Dimension(frameWidth, k));
 			panelWithImages.setSize(frameWidth, 800);
@@ -59,9 +58,7 @@ public class ImagesPanel extends JPanel {
 			panelWithImages.setMaximumSize(new Dimension(frameWidth, 800));
 			panelWithImages.setSize(frameWidth, 800);
 		}
-		this.revalidate();
-		//App.getMainFrame().validate();
-		//App.getMainFrame().repaint();
+		this.revalidate();		
 	}
 	
 	public static void showImagePanel() {
