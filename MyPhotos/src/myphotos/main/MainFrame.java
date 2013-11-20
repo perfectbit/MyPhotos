@@ -1,9 +1,12 @@
 package myphotos.main;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -31,7 +34,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
 import myphotos.components.ImagePreview;
-import myphotos.components.MyProgressBar;
 import myphotos.components.TreePanel;
 import myphotos.components.ImagesPanel;
 import myphotos.components.TagsPanel;
@@ -58,6 +60,20 @@ public class MainFrame extends JFrame {
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
+
+		this.addComponentListener(new ComponentListener() {
+			@Override
+			public void componentResized(ComponentEvent evt) {
+				Component c = (Component) evt.getSource();
+				imagesPanel.changePreferredSize();
+			}
+			@Override
+			public void componentHidden(ComponentEvent arg0) {}
+			@Override
+			public void componentMoved(ComponentEvent arg0) {}
+			@Override
+			public void componentShown(ComponentEvent arg0) {}
+		});
 
 		WindowListener exitListener = new WindowAdapter() {
 			@Override
@@ -91,6 +107,7 @@ public class MainFrame extends JFrame {
 		leftSplitPane.setLeftComponent(tagsPanel);
 		leftSplitPane.setRightComponent(treePanel);
 		topSplitPane.setRightComponent(imagesPanel);
+		imagesPanel.changePreferredSize();
 		initMainMenu();
 		// create slider
 		sliderSize = new JSlider(128, 512, 256);
@@ -99,6 +116,7 @@ public class MainFrame extends JFrame {
 		statusBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		statusBar.add(sliderSize);
 		statusBar.add(new JLabel("Size"));
+
 		// this.getContentPane().add(statusBar, BorderLayout.SOUTH);
 		setJMenuBar(mainMenu);
 	}
@@ -160,7 +178,7 @@ public class MainFrame extends JFrame {
 				}
 				imagesPanel.changePreferredSize();
 				imagesPanel.revalidate();
-				App.getMainFrame().validate();
+				// App.getMainFrame().validate();
 			}
 		}
 
@@ -204,7 +222,6 @@ public class MainFrame extends JFrame {
 				@Override
 				protected void process(List<Integer> chunks) {
 					final Integer integer = chunks.get(chunks.size() - 1);
-					System.out.println("Integer = " + integer);
 					progressBar.setValue(integer);
 					panel.repaint();
 				}
@@ -225,7 +242,7 @@ public class MainFrame extends JFrame {
 					e.printStackTrace();
 				}
 			}
-			
+
 			LinkedList<BufferedImage> buffList = new LinkedList<BufferedImage>();
 			for (ReadImageFromDisk elem : tasks) {
 				buffList.add(elem.getImage());
@@ -315,7 +332,7 @@ public class MainFrame extends JFrame {
 				ImagesPanel.showImagePanel();
 				imagesPanel.revalidate();
 				App.getMainFrame().validate();
-			}			
+			}
 			repaint();
 		}
 	}

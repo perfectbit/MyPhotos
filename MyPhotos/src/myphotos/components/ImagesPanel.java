@@ -31,27 +31,37 @@ public class ImagesPanel extends JPanel {
 		CardLayout c1;
 		if (thisPanel != null) {
 			thisPanel.imageView.setImage(file);
+			thisPanel.changePreferredSize();
 			c1 = (CardLayout) thisPanel.getLayout();
 			c1.show(thisPanel, thisPanel.IMAGE_VIEW);			
-			thisPanel.changePreferredSize();
-			App.getMainFrame().validate();
-			App.getMainFrame().repaint();
+					
 		}
 	}
 	
 	public void changePreferredSize() {		
 		int frameWidth = this.getWidth();
-		int count = imagesPreviews.size();		
-		int compInLine = frameWidth/230;		
+		int count = imagesPreviews.size();
+		int compInLine;
+		if (frameWidth != 0) { 
+			compInLine = frameWidth/200;
+		} else {
+			compInLine = 3;
+		}
 		
 		if (count > compInLine) {
-			int k = 310*((count/compInLine)+1);
+			int k = 260*((count/compInLine)+1);
+			System.out.println("Preferred size height (k) = " + k);
 			panelWithImages.setPreferredSize(new Dimension(frameWidth, k));
-			panelWithImages.setMaximumSize(new Dimension(frameWidth, k));			
-		} else {
-			panelWithImages.setPreferredSize(new Dimension(frameWidth, 310));
-			panelWithImages.setMaximumSize(new Dimension(frameWidth, 310));
+			panelWithImages.setMaximumSize(new Dimension(frameWidth, k));
+			panelWithImages.setSize(frameWidth, 800);
+		} else {			
+			panelWithImages.setPreferredSize(new Dimension(frameWidth, 800));
+			panelWithImages.setMaximumSize(new Dimension(frameWidth, 800));
+			panelWithImages.setSize(frameWidth, 800);
 		}
+		this.revalidate();
+		//App.getMainFrame().validate();
+		//App.getMainFrame().repaint();
 	}
 	
 	public static void showImagePanel() {
@@ -60,13 +70,10 @@ public class ImagesPanel extends JPanel {
 			c1 = (CardLayout) thisPanel.getLayout();
 			c1.show(thisPanel, thisPanel.PANEL_WITH_IMAGES);
 			thisPanel.changePreferredSize();
-			App.getMainFrame().pack();
-			App.getMainFrame().revalidate();
-			App.getMainFrame().validate();
 		}
 	}
 	
-	public static void uncheckPreviews() {
+	public static void deselectPreviews() {
 		if (thisPanel != null) {
 			for(ImagePreview img : thisPanel.imagesPreviews) {
 				img.setFlag(false);
@@ -92,7 +99,7 @@ public class ImagesPanel extends JPanel {
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setViewportView(panelWithImages);		
 		add(PANEL_WITH_IMAGES, scrollPane);
 		
@@ -100,8 +107,9 @@ public class ImagesPanel extends JPanel {
 		createPreviews();
 		
 		CardLayout c1;
+		
 		c1 = (CardLayout) thisPanel.getLayout();
-		c1.show(thisPanel, thisPanel.PANEL_WITH_IMAGES);
+		c1.show(thisPanel, thisPanel.PANEL_WITH_IMAGES);		
 	}
 	
 	private void createPreviews() {
@@ -109,7 +117,7 @@ public class ImagesPanel extends JPanel {
 		for (ImagePreview preview : imgPreviewsList) {
 			addImagePreview(preview);
 		}
-	}	
+	}
 	
 	public void addImagePreview(ImagePreview imgPreview) {
 		imagesPreviews.add(imgPreview);
@@ -128,7 +136,7 @@ public class ImagesPanel extends JPanel {
 	public void showImagesWithThatTag(String tag) {
 		if (tag==null) {
 			clearOldImages();
-			return;		
+			return;
 		}
 		clearOldImages();
 		LinkedList<ImagePreview> imgPreviewsList = null;

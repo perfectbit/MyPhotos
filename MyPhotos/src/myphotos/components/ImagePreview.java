@@ -39,7 +39,7 @@ public class ImagePreview extends JPanel {
 
 	private final int IMAGE_SIZE = 200;
 	private final int PANEL_SIZE = 255;
-	private int BORDER_WIDTH = 3;	
+	private int BORDER_WIDTH = 3;
 	private int panelWidth = IMAGE_SIZE;
 	private int panelHeight = PANEL_SIZE;
 
@@ -142,7 +142,7 @@ public class ImagePreview extends JPanel {
 				ImagesPanel.showImage(imgFile);
 			}
 			if (arg0.getClickCount() == 1) {
-				ImagesPanel.uncheckPreviews();
+				ImagesPanel.deselectPreviews();
 				if (!borderFlag) {
 					borderFlag = true;
 				} else {
@@ -176,35 +176,41 @@ public class ImagePreview extends JPanel {
 		private int y;
 
 		JustImage(BufferedImage img) {
-			if (img.getWidth() > img.getHeight()) {
-				width = IMAGE_SIZE;
-				height = IMAGE_SIZE * img.getHeight() / img.getWidth();
-			} else {
-				width = IMAGE_SIZE * img.getWidth() / img.getHeight();
-				height = IMAGE_SIZE;
-			}
-			x = (IMAGE_SIZE - width) / 2;
-			y = (IMAGE_SIZE - height) / 2;
+			if (img != null) {
+				if (img.getWidth() > img.getHeight()) {
+					width = IMAGE_SIZE;
+					height = IMAGE_SIZE * img.getHeight() / img.getWidth();
+				} else {
+					width = IMAGE_SIZE * img.getWidth() / img.getHeight();
+					height = IMAGE_SIZE;
+				}
+				x = (IMAGE_SIZE - width) / 2;
+				y = (IMAGE_SIZE - height) / 2;
 
-			if (x > y) {
-				border = new RoundRectangle2D.Double(x, y + 1, width,
-						height - 3, 0, 0);
-			} else {
-				border = new RoundRectangle2D.Double(x + 1, y, width - 3,
-						height, 0, 0);
+				if (x > y) {
+					border = new RoundRectangle2D.Double(x, y + 1, width,
+							height - 3, 0, 0);
+				} else {
+					border = new RoundRectangle2D.Double(x + 1, y, width - 3,
+							height, 0, 0);
+				}
 			}
 		}
 
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2d = (Graphics2D) g;
 
-			g2d.drawImage(image, x, y, width, height, null);
-
-			if (borderFlag) {
-				g2d.setStroke(new BasicStroke(BORDER_WIDTH));
-				g2d.setColor(color);
-				g2d.draw(border);
+			if (image != null) {
+				g2d.drawImage(image, x, y, width, height, null);
+				if (borderFlag) {
+					g2d.setStroke(new BasicStroke(BORDER_WIDTH));
+					g2d.setColor(color);
+					g2d.draw(border);
+				}
+			} else {
+				g2d.drawString("File not found", 10, 30);
 			}
+			
 		}
 	}
 

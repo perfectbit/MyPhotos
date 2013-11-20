@@ -15,6 +15,9 @@ public class TreePanel extends JPanel {
 
 	private FileViewer fileViewer;
 	private JScrollPane scrollPane;
+	private Dimension minSize = new Dimension(230, 300);
+	private Dimension maxSize = new Dimension(230, 4000);
+	private Dimension preferSize = new Dimension(230, 400);
 
 	public TreePanel(MainFrame frame) {
 		super();
@@ -31,17 +34,17 @@ public class TreePanel extends JPanel {
 	
 	@Override
 	public Dimension getMinimumSize() {
-		return new Dimension(150, 100);
+		return minSize;
 	};
 	
 	@Override
 	public Dimension getMaximumSize() {
-		return new Dimension(150, 4000);
+		return maxSize;
 	};
 
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(150, 400);
+		return preferSize;
 	};
 
 }

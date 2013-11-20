@@ -29,9 +29,9 @@ public class TagsPanel extends JPanel {
 	private JButton newTagButton;
 	private JButton delTagButton;
 	private JButton editTagButton;
-	private Dimension minSize = new Dimension(200, 300);
-	private Dimension maxSize = new Dimension(200, 4000);
-	private Dimension preferSize = new Dimension(200, 400);
+	private Dimension minSize = new Dimension(230, 300);
+	private Dimension maxSize = new Dimension(230, 4000);
+	private Dimension preferSize = new Dimension(230, 400);
 
 	public TagsPanel() {
 		super(new GridLayout(10, 1));
